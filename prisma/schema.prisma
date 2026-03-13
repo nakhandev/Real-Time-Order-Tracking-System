@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  avatar    String?
+  role      String   @default("customer") // customer, driver, admin
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  orders    Order[]  @relation("UserOrders")
+  drivers   Driver[] @relation("UserDriver")
+}
+
+model Driver {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation("UserDriver", fields: [userId], references: [id])
+  vehicleType   String   // car, motorcycle, bicycle
+  vehiclePlate  String?
+  isActive      Boolean  @default(false)
+  isAvailable   Boolean  @default(true)
+  rating        Float    @default(5.0)
+  totalDeliveries Int    @default(0)
+  currentLat    Float?
+  currentLng    Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  orders        Order[]  @relation("DriverOrders")
+  locations     Location[]
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderNumber     String   @unique
+  customerId      String
+  customer        User     @relation("UserOrders", fields: [customerId], references: [id])
+  driverId        String?
+  driver          Driver?  @relation("DriverOrders", fields: [driverId], references: [id])
+  
+  // Pickup & Delivery Info
+  pickupAddress   String
+  pickupLat       Float?
+  pickupLng       Float?
+  deliveryAddress String
+  deliveryLat     Float?
+  deliveryLng     Float?
+  
+  // Order Details
+  items           String   // JSON string of items
+  totalAmount     Float
+  deliveryFee     Float
+  notes           String?
+  
+  // Status
+  status          String   @default("pending") // pending, confirmed, preparing, picked_up, in_transit, delivered, cancelled
+  estimatedTime   Int?     // in minutes
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  confirmedAt     DateTime?
+  pickedUpAt      DateTime?
+  deliveredAt     DateTime?
+  
+  locations       Location[]
+  notifications   Notification[]
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id])
+  driverId    String
+  driver      Driver   @relation(fields: [driverId], references: [id])
+  latitude    Float
+  longitude   Float
+  speed       Float?   // km/h
+  heading     Float?   // degrees
+  timestamp   DateTime @default(now())
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  type        String   // order_confirmed, driver_assigned, picked_up, in_transit, delivered, cancelled
+  title       String
+  message     String
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
