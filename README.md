@@ -177,7 +177,7 @@ model Notification {
 ```bash
 # Clone the repository
 git clone https://github.com/nakhandev/Real-Time-Order-Tracking-System.git
-cd my-project
+cd Real-Time-Order-Tracking-System
 
 # Install dependencies
 bun install
