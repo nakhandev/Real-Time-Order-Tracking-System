@@ -37,7 +37,7 @@ A production-ready delivery tracking application with real-time GPS tracking, li
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         CLIENT (Browser)                         │
+│                         CLIENT (Browser)                        │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
 │  │   Orders    │  │  New Order  │  │   Live Map Tracking     │  │
 │  │    List     │  │    Form     │  │   (Leaflet + Socket)    │  │
@@ -50,8 +50,8 @@ A production-ready delivery tracking application with real-time GPS tracking, li
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                        API GATEWAY (Caddy)                       │
-│                    Port 3000 (Main) + 3003 (WS)                  │
+│                        API GATEWAY (Caddy)                      │
+│                    Port 3000 (Main) + 3003 (WS)                 │
 └─────────────────────────────────────────────────────────────────┘
           │                                        │
           ▼                                        ▼
@@ -176,7 +176,7 @@ model Notification {
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/nakhandev/Real-Time-Order-Tracking-System.git
 cd my-project
 
 # Install dependencies
